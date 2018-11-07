@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    include: in
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.170.128:3306/ismp?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    hikari:
+      idle-timeout: 10000
+
+#### 关闭thymeleaf 缓存
+  thymeleaf:
+    cache: true
+
+#### 关闭安全认证
+management:
+  security:
+    enabled: false

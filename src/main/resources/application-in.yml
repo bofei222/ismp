@@ -1,0 +1,10 @@
+#### 生产区、归档区
+path:
+  production: C:/production1
+  archive: C:/archive2
+
+iamp:
+  url: http://192.168.1.108:8080/iamp
+  username: ylp2
+  webKey: RHaPxh1OiAzMkw68
+
