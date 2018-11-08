@@ -1,4 +1,4 @@
-package com.nei.ismp.iampapi;
+package com.nei.ismp.service.iampapi;
 
 import com.nei.ismp.properties.IampProperties;
 
