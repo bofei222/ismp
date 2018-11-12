@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ScheduledTasks {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTasks.class);
 
     @Autowired
     private IampApi iampApi;
@@ -33,7 +33,7 @@ public class ScheduledTasks {
     /*********每50s扫描一次策略表**********/
     @Scheduled(fixedRate = 50000)
     public void reportCurentTime() throws InterruptedException {
-        logger.info("扫描策略表，时间");
+        LOGGER.info("扫描策略表，时间");
         // 符合条件就任务，
 //        if (true) {
         // 调用 远程接口 创建写入任务
@@ -44,7 +44,7 @@ public class ScheduledTasks {
 //        }
     }
 
-    // 创建任务，周期性执行
+//     创建任务，周期性执行
     public void queryStatus(String id) {
 //        System.out.println("周期性，用任务id查询，查询任务状态");
         MyTask myTask = new MyTask(id);
@@ -74,10 +74,10 @@ public class ScheduledTasks {
             // 远程接口的封装
 //                status = iampApi.inquiryTaskStatus(id);
             status = taskService.getTaskStatusById(id);
-            logger.info("任务id:{},任务状态:{}", id, status);
+            LOGGER.info("任务id:{},任务状态:{}", id, status);
 
             if (!status.equals("1")) {
-                logger.info("任务已完成，停止任务");
+                LOGGER.info("任务已完成，停止任务");
                 throw new RuntimeException();
             }
 

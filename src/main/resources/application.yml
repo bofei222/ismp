@@ -10,6 +10,10 @@ spring:
     password: root
     hikari:
       idle-timeout: 10000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 #### 关闭thymeleaf 缓存
   thymeleaf:
