@@ -31,7 +31,7 @@ public class ScheduledTasks {
     private static ScheduledExecutorService timer = Executors.newScheduledThreadPool(100);
 
     /*********每50s扫描一次策略表**********/
-    @Scheduled(fixedRate = 50000)
+//    @Scheduled(fixedRate = 50000)
     public void reportCurentTime() throws InterruptedException {
         LOGGER.info("扫描策略表，时间");
         // 符合条件就任务，
