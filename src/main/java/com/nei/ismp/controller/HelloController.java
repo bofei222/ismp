@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Controller
 @RefreshScope
+@CrossOrigin
 public class HelloController {
 
     @Value("${path.production}")
@@ -35,6 +37,8 @@ public class HelloController {
         System.out.println(iamp.getUrl());
         return "hello";
     }
+
+
 
     @GetMapping("/path")
     public String path(ModelMap map) {

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/jquery.pagination.css"/>
+</head>
+<body>
+<div>
+
+    VIN：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input value="" id="VIN">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="search" class="btn btn-default">搜索</button>
+    <br/>
+    上报时间从：<input type="text" value="" id="RCVTIME_B" class="datetimepicker">
+    到：<input type="text" value="" id="RCVTIME_F" class="datetimepicker"><br/>
+    采样时间从：<input type="text" value="" id="DEVTIME_B" class="datetimepicker">
+    到：<input type="text" value="" id="DEVTIME_F" class="datetimepicker"><br/>
+
+</div>
+<hr/>
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Panel heading</div>
+
+    <!-- Table -->
+    <table class="table table-dark" id="t">
+
+    </table>
+
+    <div class="box">
+        <div id="pagination3" class="page fl"></div>
+        <div class="info fl">
+            <!--<p>当前页数：<span id="current3">4</span></p>-->
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="../js/jquery-1.8.3.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../js/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+<script src="../js/jquery.pagination.min.js"></script>
+<script type="text/javascript">
+    var baseUrl = "http://localhost:3010";
+    //    var baseUrl = "http://ec2-52-82-38-216.cn-northwest-1.compute.amazonaws.com.cn:3010";
+    $(function () {
+        console.log("===进入数据原文页面====");
+
+        $('.datetimepicker').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:ss'
+        });
+
+        // 进去页面显示按Vin和日期分组数量
+        groupByVinAndDate();
+
+        // 按条件查询原文详情列表
+        $("#search").click(function () {
+            var vin = $("#VIN").val();
+            var r_b = $("#RCVTIME_B").val();
+            var r_f = $("#RCVTIME_F").val();
+            var d_b = $("#DEVTIME_B").val();
+            var d_f = $("#DEVTIME_F").val();
+
+            var param = new Object();
+            if (vin != "" && vin != null) {
+                param.VIN = vin;
+            }
+            if (r_b != "" && r_b != null) {
+                param.RCVTIME_B = r_b;
+            }
+            if (r_f != "" && r_f != null) {
+                param.RCVTIME_F = r_f;
+            }
+            if (d_b != "" && d_b != null) {
+                param.DEVTIME_B = d_b;
+            }
+            if (d_f != "" && d_f != null) {
+                param.DEVTIME_F = d_f;
+            }
+            originaldataDetail(param);
+        });
+    });
+
+
+
+        // 双击进入数据原文详情列表
+        function enterOriginalData(date, vin) {
+            var param = new Object();
+            console.log(date + vin);
+            var r_b = "20" + date + " " + "00:00:00";
+            var r_f = "20" + date + " " + "23:59:59";
+
+            console.log(r_b);
+            console.log(r_f);
+            param.RCVTIME_B = r_b;
+            param.RCVTIME_F = r_f;
+            param.VIN = vin;
+            originaldataDetail(param);
+        }
+
+        // 按上报时间和VIn分组列表
+        function groupByVinAndDate() {
+            $.ajax({
+                url: baseUrl + "/originaldata/date/count",
+                success: function (data) {
+//                console.log(data);
+                    var ja = JSON.parse(data);
+//                console.log(ja);
+                    var str = "<tr><td nowrap='nowrap'>序号</td><td>上报时间</td><td>VIN</td><td>数量</td></tr>"
+                    $.each(ja, function (i, jo) {
+                        str += "<tr ondblclick=enterOriginalData('" + jo.DATE + "','" + jo.VIN + "')><td>" + (i + 1) + "</td><td>" + jo.DATE + "</td><td>" + jo.VIN + "</td><td>" + jo.COUNT + "</td></tr>"
+                    })
+                    $(".panel-heading").text("搜索结果数量:" + ja.length);
+                    $("#t").html(str);
+                }
+
+            });
+        }
+
+        function originaldataDetail(param, current) {
+            var paramStr = JSON.stringify(param);
+            if (current == null || current == "") {
+                current = 1;
+            }
+
+            $.ajax({
+                url: baseUrl + "/originaldataWithPage",
+                type: "get",
+                data: {"param": paramStr, "current": current},
+                success: function (data) {
+//                    console.log("===data" + data);
+//                    console.log("===data.length" + data.length);
+//                    debugger;
+                    var ja = data.originalDataByConditions;
+//                    console.log("===ja===" + ja);
+                    console.log("===ja.length===" + ja.length);
+                    var str = "<tr><td>序号</td><td>ID</td><td>VIN</td><td>DATACODE</td>" +
+                        "<td nowrap='nowrap'>上报时间</td><td nowrap='nowrap'>采样时间</td><td>数据原文</td></tr>"
+
+                    $.each(ja, function (i, jo) {
+//                        console.log("===2"+JSON.stringify(jo));
+                        str += "<tr><td>" + (i + 1) + "</td><td>" + jo.ID + "</td><td>" + jo.VIN + "</td><td>" + jo.DATACODE + "</td><td nowrap='nowrap'>"
+                            + jo.RCVTIME + "</td><td nowrap='nowrap'>" + jo.DEVTIME + "</td><td>" + jo.ORIGINALDATA + "</td></tr>"
+                    })
+                    $(".panel-heading").html("<a href='javascript:void(0);' onclick='groupByVinAndDate()'>上一页</a>");
+                    $(".panel-heading").append("            <text>搜索结果数量:" + data.total + "</text>");
+                    $("#t").html(str);
+
+                    $("#pagination3").pagination({
+                        currentPage: current,
+                        totalPage: data.pages,
+                        isShow: true,
+                        count: 7,
+                        homePageText: "首页",
+                        endPageText: "尾页",
+                        prevPageText: "上一页",
+                        nextPageText: "下一页",
+                        callback: function (current) {
+//                        $("#current3").text(current)
+                            originaldataDetail(param, current);
+                        }
+                    });
+                }
+
+            });
+        }
+
+</script>
+</body>
+</html>
