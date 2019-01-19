@@ -33,6 +33,10 @@ spring:
   redis:
     port: 6379
     host: ${myIP}
+  http:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
 #        prefetch: 1 // spring boot 默认
 
 
@@ -40,3 +44,6 @@ spring:
 management:
   security:
     enabled: false
+
+
+

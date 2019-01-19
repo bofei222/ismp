@@ -28,6 +28,9 @@ public class UploadAndDownloadFileController {
         return "uploadAndDownload";
     }
 
+
+
+
     @RequestMapping("downloadFileAction")
     public void downloadFileAction(HttpServletRequest request, HttpServletResponse response) throws InterruptedException {
 
@@ -37,7 +40,7 @@ public class UploadAndDownloadFileController {
         FileInputStream fis = null;
         try {
 //            Thread.sleep(10000);
-            File file = new File("E:\\me\\20180531下午偶然思绪记录.xmind");
+            File file = new File("E:\\uploadfile\\poiuy");
             response.setHeader("Content-Disposition",
                     "attachment; filename="
                             + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
